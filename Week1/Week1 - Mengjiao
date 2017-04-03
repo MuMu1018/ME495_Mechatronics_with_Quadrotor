@@ -1,0 +1,29 @@
+Week1
+a. 
+Already done:
+- We connect to the Raspberry Pi though wifi. 
+- We can change and copy codes into Raspberry Pi, and we can compile and run the blinking LED codes successfully. 
+- We can control PWM of the LED blinking to control LED brightness, and set the limitation to the PWM value.
+- We can make two programs talk to each other, and make one program quit when another one quit with user command.
+
+To be solved:
+- We try to implement the function that: ‘Read.c’ can break when ’Write.c’ ends improperly (use Alt+C to quit it), but there are some logical problems. 
+- We add a variable ‘message’ into the struct data(both programs), and increase it by one  in ’Write.c’ while(1) loop. In ‘Read.c’ we check message value each while(1) loop, if it is equal to former value, we will wait some time and check it again, if still same, then we will quit ‘Read.c’.
+  In class, we cannot finish debugging before time out, thus we will keep working on it and try to complete it before next class.
+
+b.
+1) What went well:
+   - We finish the LED blinking and PWM control part easily;
+   - Two programs communicate successfully.
+2) What did not go well: 
+   - Our Pi's power connection was unstable (Pi 1);
+   - Got some trouble when connect to Raspberry Pi since we never used it before, but we got through it with the help of professors.
+   - As stated above, we did not finish the last task.
+3) What will you change for next class.
+   - We may try to figure out the logical clearly first, so that we will not waste too much time in finding problem and debugging.
+
+c. - Jiarui Yang 50%
+   - Mengjiao Hong 50% 
+   We learn and do everything together, and contribute evenly to our job.
+
+d. Attached codes
