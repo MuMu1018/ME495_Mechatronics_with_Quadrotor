@@ -1,0 +1,24 @@
+Week2
+a.
+We completed all tasks on class:
+- We connect to I2C address, and read from a memory location at that address (return 0x68).
+- We turn on and set access and gyro output.
+- We read gyro z rate value from address 0x1C and convert it to int (2’s complement).
+- We use for loop finding the calibration value for z rate is 330 and subtract it from output we get to get a value closed to zero. 
+- We convert z rate value from int to dps (transfer its range from -32768 to +32767 to -245 to +245).
+- We compute current yaw by integrating rate and print it out.
+
+b.
+1) What went well:
+   - We finish the IMU connect, z rate read and convert part easily.
+2) What did not go well: 
+   - Have a little problem with the read address part, since we copy the code: printf(“0x%x”,hex_value); from the lecture slides directly and it could not work (may be because of the front type or some other reason, but it works well when we retype same code again).
+   - We spend a lot of time on debugging for the compute yaw with integrating part. That is all because we comment the while loop at the beginning (to check the address read part), however we forget to uncomment one useful line when running codes. Thus we did not update our time_prev value every time, which leading to the yaw value keep increasing every loop.
+3) What will you change for next class.
+   - I will type the codes by hand instead of just copy it from Powerpoint, for it may cause some problems when compiling.
+
+c. - Young 50%
+   - Hong 50% 
+   We write codes and debugging together, and contribute evenly to our job.
+
+d. Attached codes
