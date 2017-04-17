@@ -1,0 +1,31 @@
+Week3
+a.
+Tasks done on class:
+- We read gyro x, y, z rate from address 0x18/0x1A/0x1C, and x, y, z acceleration from address 0x28/0x2A/0x2C and convert them to int (2’s complement).
+- We found the calibration value of x, y, z rate and converted them to dps.
+- We got the integration gyro values of roll and pitch angle.
+- We use y, z acceleration values to compute roll angle with atan2() function, and use x, z acceleration values to compute pitch angle.
+- We assembled our quadrotor with provided components
+
+Tasks done on Sunday night:
+- We used both acceleration and gyro value to implement a roll and pitch complementary filter, and got filtered roll and pitch values
+
+Explanation: gyro sensor has low noise, while accelerometer can provide more accurate value in long term with big noise. Thus, we use high pass for gyro values and low pass for acceleration values.
+
+where A = 0.02.
+
+b.
+1) What went well:
+   - We finished values reading, calibration, converting and integrating part easily.
+   - We found that the coordinate system on IMU board is left-handed and used –y, z to compute roll angle.
+2) What did not go well: 
+   - Got stuck with the filter part, and finally we found that was because we used the integration gyro value of x and y rate for high pass part. We should use the filtered roll and pitch value in the filter.
+3) What will you change for next class.
+   - Reconsider the program logic when get stuck.
+
+c. - Fan 60%
+    - Hong 40% 
+   We write codes and debugging together, and Fan find out the last bug of our program.
+
+d. Attached codes
+
