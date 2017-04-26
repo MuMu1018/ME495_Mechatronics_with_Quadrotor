@@ -5,6 +5,7 @@
 #include <math.h>
 #include <stdint.h>
 #include <signal.h>
+#include <string.h>
 
 #define frequency 25000000.0
 #define LED0 0x6			//LED0 start register
@@ -13,8 +14,10 @@
 #define LED0_OFF_L 0x8		//LED0 output and brightness control byte 2
 #define LED0_OFF_H 0x9		//LED0 output and brightness control byte 3
 #define LED_MULTIPLYER 4	// For the other 15 channels
+
 int execute,pwm,imu;
-int value[4]={1000,1000,1000,1000};
+//pwm value for motor 0-3
+float value[4]={1000,1000,1000,1000};
 
 //init the imu
 void init_imu()
@@ -28,8 +31,8 @@ void init_imu()
     wiringPiI2CWriteReg8(imu,0x10,0xC0); //turn on and set gyro output
     wiringPiI2CWriteReg8(imu,0x20,0xC0); //turn on and set accell output
 }
-
-int get_rpy(float & roll, float &yaw, float &pitch)
+//get rpy
+void get_rpy(float *rpy)
 {
     //initialize register address for gyroscope
     static int const add_gyro[3]={0x18,0x1A,0x1C};
@@ -122,9 +125,8 @@ int get_rpy(float & roll, float &yaw, float &pitch)
     rpy_angle[0]= A*acc_angle[0]+(1-A)*rpy_angle[0]; //filter roll angle
     rpy_angle[1]= A*acc_angle[1]+(1-A)*rpy_angle[1]; //filter pitch angle
     
-    roll = rpy_angle[0];
-    pitch = rpy_angle[1];
-    yaw = rpy_angle[2];
+    //get rpy
+    memcpy(rpy,rpy_angle,3*sizeof(float));
 }
 
 //init the pwm board
@@ -184,7 +186,6 @@ void init_motor(int pwm,uint8_t channel)
 //set the pwm value of the motor
 void set_PWM(int pwm, uint8_t channel, float time_on_us)
 {
-    //if(pwm<1000){pwm=1000;} //pwm value protection
     uint16_t off_value=round((time_on_us*4096.f)/(1000000.f/400.0));
     wiringPiI2CWriteReg16(pwm, LED0_OFF_L + LED_MULTIPLYER * channel,off_value);
     
@@ -193,20 +194,17 @@ void set_PWM(int pwm, uint8_t channel, float time_on_us)
 //when cntrl+c pressed, kill motors
 void trap(int signal)
 {
-    //turn off all 4 motors!!
+    //turn off  all 4 motors!!
     execute=0;
     
-    value[0]=1000;
-    value[1]=1000;
-    value[2]=1000;
-    value[3]=1000;
-    
+    //set all pwm to 1000 to stop motors
     for(int i=0;i<4;i++){
-        set_PWM(pwm,0,value[i]);
+        value[i]=1000;
+        set_PWM(pwm,i,value[i]);
     }
-    printf("ending program\n\r");
     
-    exit();
+    printf("ending program\n\r");
+    delay(100);
 }
 
 int main (int argc, char *argv[])
@@ -217,15 +215,13 @@ int main (int argc, char *argv[])
     execute=1;
     
     signal(SIGINT, &trap);
-    struct timespec te;
-    int address;
+    
     int mag,imu;
     int data;
     int display;
-    static long time_curr;
-    static long time_prev;
     
     wiringPiSetup ();
+    
     
     //setup for pwm
     pwm=wiringPiI2CSetup (0x40);  //connect pwm board to imu
@@ -241,39 +237,28 @@ int main (int argc, char *argv[])
         //start the pwm
         init_pwm(pwm);
         
-        //init motor 0
+        //init motor 0-1
         init_motor(pwm,0);
         init_motor(pwm,1);
         
-        value[0]=1200;
-        value[1]=1200;
+        float value0[4]={1250,1250,1250,1250};
+        float P=5;
         
-        int rp_pwm[2]={1250,1250};
-        int P=5;
-        //start other motor
         float rpy[3]={0,0,0};
         while(execute==1)
         {
-            //get current time in nanoseconds
-            timespec_get(&te,TIME_UTC);
-            time_curr=te.tv_nsec;
-            //compute time since last execution
-            float diff=time_curr-time_prev;
-            //check for rollover
-            if(diff<=0){diff+=1000000000;}
-            //convert to seconds
-            diff=diff/1000000000;
-            
+            //delay 5ms
+            delay(5);
             //compute roll/pitch with complementary filter, yaw with integrator
-            get_rpy(rpy[0],rpy[1],rpy[2]);
-            
-            //if cntrl+c has not been pressed
-            if(execute==1){
+            get_rpy(rpy);
+            if(execute==1)//if cntrl+c has not been pressed
+            {
                 //check imu limit safety
-                //if out of limits execute == 0, turn off motors
                 if(rpy[0]>30 || rpy[0]<-30)
                 {
+                    //if out of limits execute ==0, turn off motors
                     execute=0;
+                    
                     value[0]=1000;
                     value[1]=1000;
                     value[2]=1000;
@@ -283,49 +268,45 @@ int main (int argc, char *argv[])
                     set_PWM(pwm,1,value[1]);
                     set_PWM(pwm,2,value[2]);
                     set_PWM(pwm,3,value[3]);
+                    
+                    delay(100);
                 }
-                //else, compute p error and set motors
                 else
                 {
+                    //set motors
                     float error = P*rpy[0];
-                    value[0] = rp_pwm[0]+error;
-                    value[1] = rp_pwm[1]-error;
-                    // set pwm limitation
-                    for(int i=0;i<2;i++)
-                    {
-                        if(value[i]>1300)
-                            value[i]=1300;
-                        else if(value[i]<1000)
-                            value[i]=1000;
-                    }
-                    //printf("%f,%d,%d\n",rpy[0],value[0],value[1]);
+                    //saturate pwm value to [1000,1300]
+                    value[0] = fmax(fmin(value0[0]+error,1300.0f),1000.0f);
+                    value[1] = fmax(fmin(value0[1]-error,1300.0f),1000.0f);
+                    
                     set_PWM(pwm,0,value[0]);
                     set_PWM(pwm,1,value[1]);
+                    printf("%f,%d,%d\n",rpy[0],value[0],value[1]);
                 }
             }
-            //if cntrl+c has been pressed
-            else{
+            else
+            {
                 //turn off motors
                 value[0]=1000;
                 value[1]=1000;
                 value[2]=1000;
                 value[3]=1000;
+                
                 set_PWM(pwm,0,value[0]);
                 set_PWM(pwm,1,value[1]);
                 set_PWM(pwm,2,value[2]);
                 set_PWM(pwm,3,value[3]);
-                //exit program
+                
+                delay(100);
+                
                 return 0;
             }
-            if(display%200==0){
+            //if(display%200==0)
+            //{
+            //fprintf(f, "comp_roll %f gyro_roll %f accel_rol %f\n\r",roll_angle,-x_gyro_integrated,roll_accel);
             //printf("delta %f roll_angle %f pitch_angle %f yaw_angle %f\n\r",diff,roll_angle,pitch_angle,yaw_angle);
-            }
-            display++;
-            if (diff > 0.005) {
-                trap(0);
-            }
-            //remember the current time
-            time_prev=time_curr;
+            //}
+            //display++;
         }
     }
     return 0;
