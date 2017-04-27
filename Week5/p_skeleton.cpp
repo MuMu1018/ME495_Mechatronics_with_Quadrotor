@@ -143,7 +143,7 @@ int main (int argc, char *argv[])
     int address;
     int mag,imu;
     int data;
-    int display;
+    int display = 0;
     
     wiringPiSetup();
     
@@ -191,7 +191,7 @@ int main (int argc, char *argv[])
         float I_term = 0;
         float error = 0;
         
-        /* //yaw calibration
+    /*   //yaw calibration
          int num_samples = 0;
          while (num_samples < 10000) {
          address=0x1C;
@@ -208,11 +208,11 @@ int main (int argc, char *argv[])
          //moving average
          z_rate_average = ((num_samples-1.0)/num_samples)*z_rate_average + (1.0/num_samples)*z_rate;
          }
-         printf("yaw_rate average is %f\n\r",z_rate_average); */
+         printf("yaw_rate average is %f\n\r",z_rate_average); 
+    */
         
         while(execute==1)
         {
-            
             //read in gyro
             int x_rate=wiringPiI2CReadReg16(imu,0x18);
             int y_rate=wiringPiI2CReadReg16(imu,0x1A);
@@ -357,13 +357,12 @@ int main (int argc, char *argv[])
                 set_PWM(pwm,3,1000);
                 delay(100);
                 printf("motors set to 1000 for exit\n\r");
-                return 0;
             }
             
-            if(display%1==0)
+            if(display%200==0)
             {
                 fprintf(f, "%f\n", current_roll);
-                printf("%f		%f\r\n", roll_filtered, I_term);
+                //printf("%f		%f\r\n", roll_filtered, I_term);
             }
             display++;
             //remember the current time
