@@ -1,4 +1,4 @@
-# ME495_2017Spring - Mechatronics with Quadrotor Project
+# ME495 - Mechatronics with Quadrotor Project (2017Spring)
 My code is in [this](https://github.com/MuMu1018/Mengjiao_ME495_2017) folder.
 - Real time embedded control of an electromechanical system
 - Build a quadrotor from commodity parts (provided)
