@@ -4,6 +4,10 @@
 - Create the software for controlling quadrotor (high and low level programs)
 - Language using: C
 ## Assembling:
+Raspberry Pi Pinout Reference:
+
+![RaspberryPiPinout](https://github.com/MuMu1018/Mengjiao_ME495_2017/blob/master/Pictures/RaspberryPiPinout.png)
+
 Attach PWM board to mount:
 
 ![PWM_top](https://github.com/MuMu1018/Mengjiao_ME495_2017/blob/master/Pictures/PWM1.png)
