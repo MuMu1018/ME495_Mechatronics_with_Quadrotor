@@ -23,7 +23,7 @@ Mechanics:
 ![Mechanics_top](https://github.com/MuMu1018/Mengjiao_ME495_2017/blob/master/Assembling%20Pictures/mechanics_top.png)
 ![Mechanics_bot](https://github.com/MuMu1018/Mengjiao_ME495_2017/blob/master/Assembling%20Pictures/mechanics_bot.png)
 
-Sticky tape power bus on bottom, and insulate metal screws on top. Attach pi with rubber bands:
+Sticky tape power bus on bottom, and insulate metal screws on top. Attach pi with rubber bands and foam base:
 
 ![Assembling1](https://github.com/MuMu1018/Mengjiao_ME495_2017/blob/master/Assembling%20Pictures/assembling1.png)
 ![Assembling2](https://github.com/MuMu1018/Mengjiao_ME495_2017/blob/master/Assembling%20Pictures/assembling2.png)
@@ -31,3 +31,10 @@ Sticky tape power bus on bottom, and insulate metal screws on top. Attach pi wit
 
 ## Flight:
 
+Tuning:
+
+![FlightTuning](https://github.com/MuMu1018/Mengjiao_ME495_2017/blob/master/Assembling%20Pictures/FlightTuning.jpg)
+
+Flight:
+
+![Flight](https://github.com/MuMu1018/Mengjiao_ME495_2017/blob/master/Assembling%20Pictures/Flight.jpg)
