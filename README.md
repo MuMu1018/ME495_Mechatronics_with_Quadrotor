@@ -3,6 +3,8 @@
 - Build a quadrotor from commodity parts (provided)
 - Create the software for controlling quadrotor (high and low level programs)
 - Language using: C
+- System Plan:
+![System Plan](https://github.com/MuMu1018/Mengjiao_ME495_2017/blob/master/Pictures/System%20Plan.png)
 ## Assembling:
 Raspberry Pi Pinout Reference:
 
