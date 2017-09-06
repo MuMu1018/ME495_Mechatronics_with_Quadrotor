@@ -12,8 +12,7 @@ Raspberry Pi Pinout Reference:
 
 Attach PWM board to mount:
 
-![PWM_top](https://github.com/MuMu1018/Mengjiao_ME495_2017/blob/master/Pictures/PWM1.png)
-![PWM_bot](https://github.com/MuMu1018/Mengjiao_ME495_2017/blob/master/Pictures/PWM2.png)
+![PWM_top](https://github.com/MuMu1018/Mengjiao_ME495_2017/blob/master/Pictures/PWM.png)
 
 Mount PWM to PI:
 
